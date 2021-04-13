@@ -7,7 +7,7 @@ services:
     volumes: 
       - ./sanctuary:/var/www/
   mysql:
-    platform: linux/x86_64
+    # platform: linux/x86_64
     image: mysql:5.7
     command: --default-authentication-plugin=mysql_native_password
     restart: always
