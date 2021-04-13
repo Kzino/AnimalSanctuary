@@ -6,6 +6,9 @@
         <meta name="description" content="Animal Sanctuary Wesbite">
         <meta name="author" content="Kwame Nytantakyi">
 
+         <!-- CSRF Token -->
+        <meta name="csrf-token" content="{{ csrf_token() }}">
+
         <title>Animal Sanctuary - @yield('title')</title>
 
 

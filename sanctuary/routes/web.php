@@ -2,7 +2,12 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
-use App\Http\Controllers\LoginController;
+use App\Http\Controllers\RequestController;
+use App\Http\Controllers\AnimalController;
+use App\Http\Controllers\Auth\AuthenticationController;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Response;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,27 +24,41 @@ Route::get('/', function () {
     return view('index');
 });
 
-// Route::get('/login', function () {
-//     return view('login');
-// });
+//Auth routes
+Auth::routes();
 
-// Route::get('/register', function () {
-//     return view('register');
-// });
+//Auth redirect
+Route::get('/auth', [AuthenticationController::class, 'index'])->name('auth');
 
-// Auth::routes();
+//Public user routes
+Route::get('/home/{type?}', [HomeController::class, 'index'])->name('home');
+Route::get('/request/{status?}', [RequestController::class, 'index'])->name('request');
+Route::post('/request/adopt', [RequestController::class, 'adopt'])->name('request_adopt');
 
-Route::get('/adoption', function () {
-    return view('adoption');
-});
-
-Route::get('/addpet', function () {
-    return view('addpet');
-});
-
+//Staff user routes
 Route::get('staff/home', [HomeController::class, 'staffHome'])->name('staff.home')->middleware('is_staff');
-Route::get('/home', [HomeController::class, 'index'])->name('home');
+Route::get('staff/request/{type?}', [RequestController::class, 'staffRequest'])->name('staff.request')->middleware('is_staff');
+Route::post('staff/request/accept', [RequestController::class, 'accept'])->name('staff.request_accept');
+Route::post('staff/request/deny', [RequestController::class, 'deny'])->name('staff.request_deny');
+Route::get('staff/animal', [AnimalController::class, 'staffAnimal'])->name('staff.animal')->middleware('is_staff');
+Route::get('staff/animal/add', [AnimalController::class, 'staffAnimalAdd'])->name('staff.animal_add')->middleware('is_staff');
+Route::post('staff/animal/add', [AnimalController::class, 'store'])->name('staff.animal_add');
 
-Route::get('login', [LoginController::class, 'index'])->name('login');
 
-Route::post('login', [LoginController::class, 'login']);
+//Display images
+Route::get('storage/uploads/{filename}', function ($filename)
+{
+    $path = storage_path('app/public/uploads/' . $filename);
+
+    if (!File::exists($path)) {
+        abort(404);
+    }
+
+    $file = File::get($path);
+    $type = File::mimeType($path);
+
+    $response = Response::make($file, 200);
+    $response->header("Content-Type", $type);
+
+    return $response;
+});

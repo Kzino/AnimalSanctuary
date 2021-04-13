@@ -18,16 +18,8 @@ class CreateAnimalsTable extends Migration
             $table->string('name', 50);
             $table->date('date_of_birth');
             $table->string('description', 200);
-            $table->string('picture');
-            $table->boolean('availability');
-            $table->boolean('vaccinated');
-            $table->boolean('trained');
-            $table->enum('category', ['cats', 'dogs']);
-            $table->string('colour');
-            $table->string('breed');
-            $table->string('location');
-            $table->string('email');
-            
+            $table->boolean('availability')->default(true);
+            $table->enum('type', ['cat', 'dog']);
             $table->timestamps();
         });
     }
