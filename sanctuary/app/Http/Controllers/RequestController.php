@@ -85,11 +85,10 @@ class RequestController extends Controller
 
     public function accept(HttpRequest $request)
     {   
-        $this->validateRequest($request->all())->validate();
         return DB::transaction(function() use ($request) {
             try{
+                $this->validateRequestAccept($request->all())->validate();
                 request()->merge([
-                    'user_id' => Auth::id(), 
                     'status' => 'approved'
                 ]);
 
@@ -118,11 +117,10 @@ class RequestController extends Controller
 
     public function deny(HttpRequest $request)
     {   
-        $this->validateRequest($request->all())->validate();
         return DB::transaction(function() use ($request) {
             try{
+                $this->validateRequestDeny($request->all())->validate();
                 request()->merge([
-                    'user_id' => Auth::id(), 
                     'status' => 'denied'
                 ]);
 
@@ -203,14 +201,36 @@ class RequestController extends Controller
      * @param  array  $data
      * @return \Illuminate\Contracts\Validation\Validator
      */
-    public function validateRequest(array $data)
+    public function validateRequestAccept(array $data)
     {
         return Validator::make($data, [
             'id' => ['required',
-                Rule::exists('requests')->where('id', $data['id']),
+                function ($attribute, $value, $fail) {
+                    $count = Request::join('animals', function($join)
+                {
+                    $join->on('animals.id', '=', 'requests.animal_id');
+                })
+                ->where('animals.availability', true)
+                ->where('requests.id', $value)->count();
+                    if ($count === 0) {
+                        return $fail('The '.$attribute.' is invalid.');
+                    }
+                }
+                
             ],
         ]);
     }
+
+    public function validateRequestDeny(array $data)
+    {
+        return Validator::make($data, [
+            'id' => ['required',
+                Rule::exists('requests')
+                ->where('id', $data['id']),
+            ],
+        ]);
+    }
+
 
     /**
      * Create a new request instance after a valid animal.

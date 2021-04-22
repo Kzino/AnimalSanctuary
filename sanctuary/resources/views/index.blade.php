@@ -6,7 +6,7 @@
 
         <!-- background img -->
         <div>
-            <img src="img/catspic.jpeg" class="img-bground">
+            <img src="img/animalsanctuarybluebg2.png" class="">
         </div>    
         <hr>
         <!-- Footer -->

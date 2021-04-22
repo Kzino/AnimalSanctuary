@@ -20,3 +20,7 @@
 .sidebar .nav-link.active {
     color: #007bff;
 }
+
+.bootstrap-table.bootstrap4 {
+    width:100%;
+}

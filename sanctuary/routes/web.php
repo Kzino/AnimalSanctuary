@@ -31,7 +31,7 @@ Auth::routes();
 Route::get('/auth', [AuthenticationController::class, 'index'])->name('auth');
 
 //Public user routes
-Route::get('/home/{type?}', [HomeController::class, 'index'])->name('home');
+Route::get('/home/{type?}/{view?}', [HomeController::class, 'index'])->name('home'); 
 Route::get('/request/{status?}', [RequestController::class, 'index'])->name('request');
 Route::post('/request/adopt', [RequestController::class, 'adopt'])->name('request_adopt');
 

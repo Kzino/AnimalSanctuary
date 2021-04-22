@@ -24,8 +24,9 @@ class HomeController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function index($type = null)
+    public function index($type = null, $view = null) // add a another parameter called view type and set it null
     {
+        $type = $type == 'null'?null:$type;
         $animals = Animal::with('images')
                     ->leftJoin('requests', function($join)
                     {
@@ -43,7 +44,7 @@ class HomeController extends Controller
                         });
                     })
                     ->get(['animals.*', 'requests.status as request_status']);
-        return view('home')->with(['animals' => json_decode($animals, true), 'type' => $type]);
+        return view('home')->with(['animals' => json_decode($animals, true), 'type' => $type, 'view' => $view]); // parse view = view
     }
 
     /**
@@ -62,7 +63,7 @@ class HomeController extends Controller
                 {
                     $join->on('users.id', '=', 'requests.user_id');
                 })
-                ->where('availability', '=', 1)
+                // ->where('availability', '=', 1)
                 ->where('requests.status', '=', 'pending')
                 ->get([
                     'animals.*', 

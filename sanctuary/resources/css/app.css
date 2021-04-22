@@ -161,3 +161,15 @@ input {
     padding: 48px 0 0;
     box-shadow: inset -1px 0 0 rgb(0 0 0 / 10%);
 }
+
+.img-bground {
+  background-size: cover;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-position: center;
+  max-height: 100%;
+  max-width: 100%;
+  
+
+}
